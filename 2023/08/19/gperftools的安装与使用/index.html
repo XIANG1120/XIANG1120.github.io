@@ -20,28 +20,44 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="XIANG的博客">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="gperftools是Google开源的一款包含多线程下高性能内存分配器tcmalloc和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以treeline为例介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gperftools的安装与使用">
+<meta property="og:url" content="http://example.com/2023/08/19/gperftools%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="XIANG的博客">
+<meta property="og:description" content="gperftools是Google开源的一款包含多线程下高性能内存分配器tcmalloc和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以treeline为例介">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/leak%E8%BE%93%E5%87%BA.png">
+<meta property="og:image" content="http://example.com/images/gv.png">
+<meta property="og:image" content="http://example.com/images/text.png">
+<meta property="og:image" content="http://example.com/images/heap.png">
+<meta property="og:image" content="http://example.com/images/heap10.png">
+<meta property="og:image" content="http://example.com/images/heap10%E5%B7%A6%E4%B8%8A.png">
+<meta property="og:image" content="http://example.com/images/heap10%E8%AF%A6%E7%BB%86.png">
+<meta property="og:image" content="http://example.com/images/%E6%AF%94%E8%BE%83.png">
+<meta property="og:image" content="http://example.com/images/cpu.png">
+<meta property="og:image" content="http://example.com/images/cpu%E9%A1%B6%E9%83%A8.png">
+<meta property="og:image" content="http://example.com/images/cpu%E5%B1%80%E9%83%A8.png">
+<meta property="article:published_time" content="2023-08-19T11:37:02.000Z">
+<meta property="article:modified_time" content="2023-08-20T13:41:32.942Z">
 <meta property="article:author" content="XIANG">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/leak%E8%BE%93%E5%87%BA.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2023/08/19/gperftools%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>XIANG的博客</title>
+  <title>gperftools的安装与使用 | XIANG的博客</title>
   
 
 
@@ -141,9 +157,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -159,10 +176,9 @@
       <meta itemprop="name" content="XIANG的博客">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/19/gperftools%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">gperftools的安装与使用</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          gperftools的安装与使用
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -192,7 +208,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>gperftools是Google开源的一款包含多线程下高性能内存分配器<code>tcmalloc</code>和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%90%E8%A1%8C/">treeline</a>为例介绍其使用方法；</p>
+        <p>gperftools是Google开源的一款包含多线程下高性能内存分配器<code>tcmalloc</code>和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%90%E8%A1%8C/">treeline</a>为例介绍其使用方法；</p>
 <h2 id="安装gperftools"><a href="#安装gperftools" class="headerlink" title="安装gperftools"></a>安装gperftools</h2><h3 id="安装所需工具"><a href="#安装所需工具" class="headerlink" title="安装所需工具"></a>安装所需工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt autoconf automake libtool</span><br></pre></td></tr></table></figure>
 <h3 id="安装libunwind"><a href="#安装libunwind" class="headerlink" title="安装libunwind"></a>安装libunwind</h3><p>下载源码并解压</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.savannah.gnu.org/releases/libunwind/libunwind-1.6.0.tar.gz</span><br><span class="line">tar -zxvf libunwind-1.6.0.tar.gz</span><br></pre></td></tr></table></figure>
@@ -465,181 +481,37 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 </li>
 </ul>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E5%8F%8A%E8%BF%90%E8%A1%8C/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="XIANG">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="XIANG的博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E5%8F%8A%E8%BF%90%E8%A1%8C/" class="post-title-link" itemprop="url">TreeLine的编译及运行</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-08-19 01:50:05" itemprop="dateCreated datePublished" datetime="2023-08-19T01:50:05-07:00">2023-08-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-20 06:41:31" itemprop="dateModified" datetime="2023-08-20T06:41:31-07:00">2023-08-20</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>随着现代存储技术的发展，对于NVMe SSDs来说，随机写的开销与顺序写的开销已经不像传统存储器那样差距明显了。基于LSM结构的KV数据库，如rocksdb、leanstore都采用顺序写，会牺牲部分读性能；而2021年被提出来的TreeLine则采用随机写，是一个原地更新的KV存储系统，并提出三个关键思想提高读写性能。</p>
-<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><h3 id="安装Cmake"><a href="#安装Cmake" class="headerlink" title="安装Cmake"></a>安装Cmake</h3><p>要求：version &gt;= 3.17</p>
-<p>下载源码并解压</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://cmake.org/files/v3.24/cmake-3.24.0.tar.gz</span><br><span class="line">tar -zxvf cmake-3.24.0.tar.gz</span><br></pre></td></tr></table></figure>
-<p>编译并安装，- -prefix=/usr/local/cmake-3.24.0表示将cmake安装到目录/uar/local/cmake-3.24.0，可自定义目录，但要与下文中的环境变量目录相对应</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> cmake-3.24.0</span><br><span class="line">./bootstrap --prefix=/usr/local/cmake-3.24.0 </span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<p>打开~/.bashrc文件添加环境变量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
-<p>将目录/usr/local/cmake-3.24.0/bin添加进环境变量，在文件末尾追加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/cmake-3.24.0/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-<p>使~/.bashrc文件立即生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h3 id="安装gcc-g"><a href="#安装gcc-g" class="headerlink" title="安装gcc/g++"></a>安装gcc/g++</h3><p>要求：必须支持C++17</p>
-<p>下载源码并解压</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirror.tuna.tsinghua.edu.cn/gnu/gcc/gcc-11.4.0/gcc-11.4.0.tar.gz</span><br><span class="line">tar -zxvf gcc-11.4.0.tar.gz</span><br></pre></td></tr></table></figure>
-<p>下载所需依赖</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> gcc-11.4.0</span><br><span class="line">./contrib/download_prerequisites</span><br></pre></td></tr></table></figure>
-<p>编译并安装,将gcc/g++安装到/usr/local/gcc-11.4.0下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/usr/local/gcc-11.4.0  --enable-bootstrap --enable-languages=c,c++ --enable-checking=release --disable-multilib</span><br><span class="line">make -j4</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<p>打开~/.bashrc文件添加环境变量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
-<p>添加进环境变量，在文件末尾追加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/gcc-11.4.0/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/gcc-11.4.0/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/gcc-11.4.0/lib64:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure>
-<p>使~/.bashrc文件立即生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h3 id="安装Python"><a href="#安装Python" class="headerlink" title="安装Python"></a>安装Python</h3><p>要求：version &gt;= 3.8</p>
-<p>下载所需工具和库</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install build-essential libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev liblzma-dev tk-dev libffi-dev</span><br></pre></td></tr></table></figure>
-<p>下载源码并解压</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://www.python.org/ftp/python/3.8.16/Python-3.8.16.tgz</span><br><span class="line">tar -xf Python-3.8.16.tgz</span><br></pre></td></tr></table></figure>
-<p>编译并安装，安装到/usr/local/python-3.8.16目录下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Python-3.8.16</span><br><span class="line">./configure --prefix=/usr/local/python-3.8.16 --enable-optimizations </span><br><span class="line">make </span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<p>打开~/.bashrc文件添加环境变量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
-<p>将目录/usr/local/python-3.8.16/bin添加进环境变量，在文件末尾追加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/python-3.8.16/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-<p>使~/.bashrc文件立即生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h3 id="下载其他所需依赖"><a href="#下载其他所需依赖" class="headerlink" title="下载其他所需依赖"></a>下载其他所需依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libtbb-dev autoconf libjemalloc-dev</span><br></pre></td></tr></table></figure>
-<p>若无法使用此方法安装libtbb-dev和libjemalloc-dev，也可以选择下载源码并编译安装，参考下文中的“安装tbb库”和“安装jemalloc库”</p>
-<h3 id="安装tbb库"><a href="#安装tbb库" class="headerlink" title="安装tbb库"></a>安装tbb库</h3><p>下载源码</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/oneapi-src/oneTBB.git</span><br></pre></td></tr></table></figure>
-<p>编译并安装，安装目录为/tmp/my_installed_onetbb </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> oneTBB</span><br><span class="line"><span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX=/tmp/my_installed_onetbb -DTBB_TEST=OFF ..</span><br><span class="line">cmake --build .</span><br><span class="line">cmake --install .</span><br></pre></td></tr></table></figure>
-<p>将所需头文件及依赖复制到/usr/local/gcc-11.4.0/include/c++/11.4.0/和/usr/local/gcc-11.4.0/lib64/下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tem/my_installed_onetbb</span><br><span class="line">sudo <span class="built_in">cp</span> -r include/tbb  /usr/local/gcc-11.4.0/include/c++/11.4.0/  //复制头文件</span><br><span class="line"><span class="built_in">cd</span> lib64</span><br><span class="line">sudo <span class="built_in">cp</span> *.so *.2 *.11 *.12 /usr/local/gcc-11.4.0/lib64/  //复制依赖</span><br></pre></td></tr></table></figure>
-<h3 id="安装jemalloc库"><a href="#安装jemalloc库" class="headerlink" title="安装jemalloc库"></a>安装jemalloc库</h3><p>下载源码并解压</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/jemalloc/jemalloc/archive/5.2.1.tar.gz</span><br><span class="line">tar -zxvf 5.2.1.tar.gz</span><br></pre></td></tr></table></figure>
-<p>编译并安装，安装目录默认为/usr/local</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> jemalloc-5.2.1</span><br><span class="line">./autogen.sh</span><br><span class="line">./configure --with-version=<span class="string">&quot;5.2.1-0-g0&quot;</span>  </span><br><span class="line">make dist </span><br><span class="line">make </span><br><span class="line">sudo make install </span><br></pre></td></tr></table></figure>
-<p>打开~/.bashrc文件添加环境变量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
-<p>将目录/usr/local/bin和/usr/local/lib添加进环境变量，在文件末尾追加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRAR_PATH=/usr/local/lib:<span class="variable">$LD_LIBRAR_PATH</span></span><br></pre></td></tr></table></figure>
-<p>使~/.bashrc文件立即生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h2 id="下载TreeLine源码"><a href="#下载TreeLine源码" class="headerlink" title="下载TreeLine源码"></a>下载TreeLine源码</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/mitdbg/treeline.git</span><br></pre></td></tr></table></figure>
-<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><p>创建build文件夹存放编译后的文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> build &amp;&amp; <span class="built_in">cd</span> build</span><br></pre></td></tr></table></figure>
-<p>执行编译（不包括treeline/tests/和treeline/benchmarks/目录下的文件）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -DCMAKE_BUILD_TYPE=Release .. &amp;&amp; make -j</span><br></pre></td></tr></table></figure>
-<p>若也要编译treeline/tests/下的文件，则编译命令可换为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -DCMAKE_BUILD_TYPE=Release -DTL_BUILD_TESTS=ON .. &amp;&amp; make -j</span><br></pre></td></tr></table></figure>
-<p>同样地，若也要编译treeline/benchmarks/下的文件，则编译命令可换为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -DCMAKE_BUILD_TYPE=Release -DTL_BUILD_BENCHMARKS=ON .. &amp;&amp; make -j</span><br></pre></td></tr></table></figure>
-<p>也可将treeline/下的文件全部编译：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -DCMAKE_BUILD_TYPE=Release -DTL_BUILD_TESTS=ON -DTL_BUILD_BENCHMARKS=ON .. &amp;&amp; make -j</span><br></pre></td></tr></table></figure>
-<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><h3 id="下载cond"><a href="#下载cond" class="headerlink" title="下载cond"></a>下载cond</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt install python3-pip  //先下载pip</span><br><span class="line">pip install conductor-cli</span><br></pre></td></tr></table></figure>
-<p>命令行输入<code>cond</code>，若显示Command cond not found，打开~/.bashrc文件添加环境变量</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
-<p>将cond所在目录/home/xxx/.local/bin添加进环境变量，在文件末尾追加（xxx为用户名）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/home/xxx/.local/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
-<p>使~/.bashrc文件立即生效</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h3 id="设置checkpoint存储路径"><a href="#设置checkpoint存储路径" class="headerlink" title="设置checkpoint存储路径"></a>设置checkpoint存储路径</h3><p>在treeline/scripts/下创建experiment_config.sh文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> treeline/scripts</span><br><span class="line"><span class="built_in">touch</span> experiment_config.sh</span><br></pre></td></tr></table></figure>
-<p>将treeline/scripts/experiment_config_example.sh的内容复制给experiment_config.sh</p>
-<p>修改experiment_config.sh文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#存储checkpoint的路径</span></span><br><span class="line">DB_CHECKPOINT_PATH = xxxx/llsm-checkpoint</span><br><span class="line"><span class="comment">#加载checkpoint的路径</span></span><br><span class="line">DB_PATH = xxxx/llsm</span><br><span class="line"><span class="comment">#自定义数据集存储路径</span></span><br><span class="line">TP_DATASET_PATH = xxxx/datasets</span><br></pre></td></tr></table></figure>
-<h3 id="修改实验配置"><a href="#修改实验配置" class="headerlink" title="修改实验配置"></a>修改实验配置</h3><p>实验配置写在treeline/scripts/ycsb_v2/COND中</p>
-<p>可以通过修改此COND文件中的WORKLOADS，DBS，DISTRIBUTIONS，THREADS，CONFIGS等来修改运行的工作负载类型、数据库、数据分布类型、线程数、记录大小等</p>
-<p>例：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">WORKLOADS = [<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,]  </span><br><span class="line">DBS = [</span><br><span class="line">  <span class="string">&quot;leanstore&quot;</span>,</span><br><span class="line">  <span class="string">&quot;pg_llsm&quot;</span>,</span><br><span class="line">  <span class="string">&quot;rocksdb&quot;</span></span><br><span class="line">]</span><br><span class="line">DISTRIBUTIONS = [<span class="string">&quot;zipfian&quot;</span>]</span><br><span class="line">THREADS = [1, 2, 4, 8, 16]</span><br><span class="line">CONFIGS = [CONFIG_64B]</span><br></pre></td></tr></table></figure>
-<p>表示只运行工作负载A和B类型，在所示三个数据库上进行测试，数据分布类型为zipfian，并分别使用1，2，4，8，16线程跑五次，一个记录大小为64B</p>
-<p>实验配置修改完成后，通过替换下文“测试benchmark”中的command，可实现特定的任务</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">command</span> = synth   //在合成数据集上测试</span><br><span class="line"><span class="built_in">command</span> = amzn    //在amzn数据集上测试</span><br><span class="line"><span class="built_in">command</span> = osm     //在osm数据集上测试</span><br></pre></td></tr></table></figure>
-<p>更多“command”可取值详见COND文件</p>
-<h3 id="运行benchmark"><a href="#运行benchmark" class="headerlink" title="运行benchmark"></a>运行benchmark</h3><p>使用cond命令运行</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> treeline</span><br><span class="line">cond run //scripts/ycsb_v2: <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
-<p>结果保存在treeline/cond-out/下</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E5%8F%8A%E8%BF%90%E8%A1%8C/" rel="prev" title="TreeLine的编译及运行">
+      <i class="fa fa-chevron-left"></i> TreeLine的编译及运行
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -686,6 +558,7 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools"><span class="nav-number">1.</span> <span class="nav-text">安装gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%89%80%E9%9C%80%E5%B7%A5%E5%85%B7"><span class="nav-number">1.1.</span> <span class="nav-text">安装所需工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libunwind"><span class="nav-number">1.2.</span> <span class="nav-text">安装libunwind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7gv"><span class="nav-number">1.3.</span> <span class="nav-text">安装图形可视化工具gv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools-1"><span class="nav-number">1.4.</span> <span class="nav-text">安装gperftools</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8gperftools"><span class="nav-number">2.</span> <span class="nav-text">使用gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCMalloc"><span class="nav-number">2.1.</span> <span class="nav-text">TCMalloc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap-Checker"><span class="nav-number">2.2.</span> <span class="nav-text">Heap_Checker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap-Profile"><span class="nav-number">2.3.</span> <span class="nav-text">Heap_Profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-Profile"><span class="nav-number">2.4.</span> <span class="nav-text">CPU_Profile</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -851,6 +724,25 @@ window.addEventListener('pjax:success', () => {
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '956cf00e5f5cd2b0aefc',
+      clientSecret: 'bf5af52bcd6ed906709bf569fcaaea1def58dc5f',
+      repo        : 'XIANG1120.github.io',
+      owner       : 'XIANG1120',
+      admin       : ['XIANG1120'],
+      id          : '4f017657877fb5a780008342c86ee5cc',
+        language: 'zh-CH',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
     </div>
 </body>
