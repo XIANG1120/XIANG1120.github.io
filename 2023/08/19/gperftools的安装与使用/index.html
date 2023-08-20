@@ -39,7 +39,7 @@
 <meta property="og:image" content="http://example.com/images/cpu%E9%A1%B6%E9%83%A8.png">
 <meta property="og:image" content="http://example.com/images/cpu%E5%B1%80%E9%83%A8.png">
 <meta property="article:published_time" content="2023-08-19T11:37:02.000Z">
-<meta property="article:modified_time" content="2023-08-20T13:53:11.257Z">
+<meta property="article:modified_time" content="2023-08-20T14:13:07.812Z">
 <meta property="article:author" content="XIANG">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/leak%E8%BE%93%E5%87%BA.png">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-20 06:53:11" itemprop="dateModified" datetime="2023-08-20T06:53:11-07:00">2023-08-20</time>
+                <time title="修改时间：2023-08-20 07:13:07" itemprop="dateModified" datetime="2023-08-20T07:13:07-07:00">2023-08-20</time>
               </span>
 
           
@@ -208,14 +208,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>gperftools是Google开源的一款包含多线程下高性能内存分配器<code>tcmalloc</code>和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine%E7%9A%84%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%90%E8%A1%8C/">treeline</a>为例介绍其使用方法；</p>
-<h2 id="安装gperftools"><a href="#安装gperftools" class="headerlink" title="安装gperftools"></a>安装gperftools</h2><h4 id="安装所需工具"><a href="#安装所需工具" class="headerlink" title="安装所需工具"></a>安装所需工具</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt autoconf automake libtool</span><br></pre></td></tr></table></figure>
-<h4 id="安装libunwind"><a href="#安装libunwind" class="headerlink" title="安装libunwind"></a>安装libunwind</h4><p>下载源码并解压</p>
+        <p>gperftools是Google开源的一款包含多线程下高性能内存分配器<code>tcmalloc</code>和其他性能分析工具的集合。共分为四个部分，TCmalloc：一个优化的内存管理算法；Heap_Check：检测程序运行过程中是否发生内存泄漏的工具；Heap_Profile：监控程序运行过程中的内存分配情况的工具；Cpu_Profile：监控程序运行过程中的cpu消耗时间的工具；部分工具以<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">treeline</a>为例介绍其使用方法；</p>
+<h2 id="安装gperftools"><a href="#安装gperftools" class="headerlink" title="安装gperftools"></a>安装gperftools</h2><h3 id="安装所需工具"><a href="#安装所需工具" class="headerlink" title="安装所需工具"></a>安装所需工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt autoconf automake libtool</span><br></pre></td></tr></table></figure>
+<h3 id="安装libunwind"><a href="#安装libunwind" class="headerlink" title="安装libunwind"></a>安装libunwind</h3><p>下载源码并解压</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.savannah.gnu.org/releases/libunwind/libunwind-1.6.0.tar.gz</span><br><span class="line">tar -zxvf libunwind-1.6.0.tar.gz</span><br></pre></td></tr></table></figure>
 <p>编译并安装，默认安装在/usr/local目录下</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> libunwind-1.6.0</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h4 id="安装图形可视化工具gv"><a href="#安装图形可视化工具gv" class="headerlink" title="安装图形可视化工具gv"></a>安装图形可视化工具gv</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install graphviz gv</span><br></pre></td></tr></table></figure>
-<h4 id="安装gperftools-1"><a href="#安装gperftools-1" class="headerlink" title="安装gperftools"></a>安装gperftools</h4><p>下载源码并解压</p>
+<h3 id="安装图形可视化工具gv"><a href="#安装图形可视化工具gv" class="headerlink" title="安装图形可视化工具gv"></a>安装图形可视化工具gv</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install graphviz gv</span><br></pre></td></tr></table></figure>
+<h3 id="安装gperftools-1"><a href="#安装gperftools-1" class="headerlink" title="安装gperftools"></a>安装gperftools</h3><p>下载源码并解压</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://sourceforge.net/projects/gperftools.mirror/files/gperftools-2.10/gperftools-2.10.tar.gz</span><br><span class="line">tar -zxvf gperftools-2.10.tar.gz</span><br></pre></td></tr></table></figure>
 <p>编译并安装，默认安装在/usr/local目录下</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> gperftools-2.10</span><br><span class="line">./autogen.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make instal</span><br></pre></td></tr></table></figure>
@@ -225,7 +225,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/usr/local/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> PPROF_PATH=/usr/local/bin</span><br><span class="line"><span class="built_in">export</span> LD_LIBRAR_PATH=/usr/local/lib:<span class="variable">$LD_LIBRAR_PATH</span></span><br></pre></td></tr></table></figure>
 <p>使~/.bashrc文件立即生效</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h2 id="使用gperftools"><a href="#使用gperftools" class="headerlink" title="使用gperftools"></a>使用gperftools</h2><h4 id="TCMalloc"><a href="#TCMalloc" class="headerlink" title="TCMalloc"></a>TCMalloc</h4><ul>
+<h2 id="使用gperftools"><a href="#使用gperftools" class="headerlink" title="使用gperftools"></a>使用gperftools</h2><h3 id="TCMalloc"><a href="#TCMalloc" class="headerlink" title="TCMalloc"></a>TCMalloc</h3><ul>
 <li><p>简介</p>
 <p>tcmalloc全称Thread-Caching Malloc，即线程缓存的malloc，<em>实现了高效的多线程内存管理</em>，对 C 的 malloc() 和 C++ 的 operator new 自定义了实现，用于替代系统的内存分配相关的函数（malloc、free，new，new[]等）。</p>
 <p>TCMalloc (google-perftools) 是<strong>用于优化C++写的多线程应用</strong>，比glibc 2.3的malloc快。</p>
@@ -241,7 +241,7 @@
 <li><p>更多信息请见<a target="_blank" rel="noopener" href="https://gperftools.github.io/gperftools/tcmalloc.html">官方文档</a></p>
 </li>
 </ul>
-<h4 id="Heap-Checker"><a href="#Heap-Checker" class="headerlink" title="Heap_Checker"></a>Heap_Checker</h4><ul>
+<h3 id="Heap-Checker"><a href="#Heap-Checker" class="headerlink" title="Heap_Checker"></a>Heap_Checker</h3><ul>
 <li><p>简介</p>
 <p><strong>用来检测 C++ 程序中内存泄漏</strong>的堆检查器，检测进程整个生命周期的内存泄露。</p>
 <p>heap_checker的检测方式有4种，按检测的严格程度依次为：minimal，normal，strict，draconian ，normal模式适用于大多数内存泄露检查。</p>
@@ -265,12 +265,12 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ leak.cpp -g -o leak -ltcmalloc</span><br><span class="line"><span class="built_in">env</span>  HEAPCHECK=normal ./leak</span><br></pre></td></tr></table></figure>
 <p>输出</p>
 <p><img src="/images/leak输出.png" alt=""></p>
-<p>绿框中的输出表示，leak.cpp有4处内存泄露：分别泄露8192bytes、8192bytes、5120bytes和5120bytes</p>
-<p>另外，heap_checker提示我们可以执行红框中的语句实现可视化分析</p>
+<p><code>绿框</code>中的输出表示，leak.cpp有4处内存泄露：分别泄露8192bytes、8192bytes、5120bytes和5120bytes</p>
+<p>另外，heap_checker提示我们可以执行<code>红框</code>中的语句实现可视化分析</p>
 <p>通过pprof工具进行可视化分析</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pprof ./leak <span class="string">&quot;/tmp/leak.10448._main_-end.heap&quot;</span> --inuse_objects --lines --heapcheck  --edgefraction=1e-10 --nodefraction=1e-10 --gv</span><br></pre></td></tr></table></figure>
 <p><img src="/images/gv.png" alt=""></p>
-<p>每个灰色方框表示一处内存泄露，方框包含<em>函数名称</em>、<em>cpp文件位置</em>和<em>内存泄漏发生在cpp文件中的具体行数</em>。指向它们的白色方框中包含的是调用发生内存泄漏的函数的上一级函数信息，也包含<em>函数名称</em>、<em>cpp文件位置</em>和<em>调用发生在cpp文件中的具体行数</em>。</p>
+<p>每个<code>灰色方框</code>表示一处内存泄露，方框包含<strong><em>函数名称</em></strong>、<strong><em>cpp文件位置</em></strong>和<strong><em>内存泄漏发生在cpp文件中的具体行数</em></strong>。指向它们的<code>白色方框</code>中包含的是调用发生内存泄漏的函数的函数信息，也包含<strong><em>函数名称</em></strong>、<strong><em>cpp文件位置</em></strong>和<strong><em>调用发生在cpp文件中的具体行数</em></strong>。</p>
 <p>由可视化结果可知，发生四处内存泄露：</p>
 <pre><code>第一处内存泄漏在leak.cpp的第7行，函数名为test1，这个函数被leak.cpp中的main函数调用，调用发生在leak.cpp的第17行
 
@@ -283,7 +283,7 @@
 <p><code>--text</code>  &nbsp;&nbsp;&nbsp;&nbsp;生成文字报告 </p>
 <p><code>--stack</code> &nbsp;&nbsp;&nbsp;&nbsp;生成堆栈跟踪 </p>
 <p><code>--web</code>   &nbsp;&nbsp;&nbsp;&nbsp;以网页的形式展示 </p>
-<p><code>--pdf</code>   &nbsp;&nbsp;&nbsp;&nbsp;生成pdf到标准输出 （较快，推荐）<code>--pdf &gt; xxx.pdf</code></p>
+<p><code>--pdf</code>   &nbsp;&nbsp;&nbsp;&nbsp;生成pdf到标准输出 （较快，推荐）</p>
 <p>…</p>
 <p>更多查看结果的方式请使用 <code>pprof --help</code> 命令查阅</p>
 <p>例如：以text形式查看分析结果</p>
@@ -332,7 +332,7 @@
 <ul>
 <li>更多信息请见<a target="_blank" rel="noopener" href="https://gperftools.github.io/gperftools/heap_checker.html">官方文档</a></li>
 </ul>
-<h4 id="Heap-Profile"><a href="#Heap-Profile" class="headerlink" title="Heap_Profile"></a>Heap_Profile</h4><ul>
+<h3 id="Heap-Profile"><a href="#Heap-Profile" class="headerlink" title="Heap_Profile"></a>Heap_Profile</h3><ul>
 <li><p>简介</p>
 <p>heap_profile监控程序运行过程中的内存使用情况，会在程序运行时不断生成.heap文件，记录某时刻程序所使用的内存大小和详细信息。</p>
 <p><strong>用来分析程序运行中的内存消耗瓶颈</strong>，也可以通过比较不同时刻的内存使用量来定位内存泄露。</p>
@@ -404,7 +404,7 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 <p>将两个.heap文件相比较</p>
 </blockquote>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pprof --base=scripts/ycsb_v2/heapprofile/amzn_64B_a_heapprofile.hprof.0011.heap build/bench/run_custom scripts/ycsb_v2/heapprofile/amzn_64B_a_heapprofile.hprof.0010.heap </span><br></pre></td></tr></table></figure>
-<p>此时会进入交互窗口，输入top20，显示前20个内存大小变化最大的函数</p>
+<p>此时会进入交互窗口，输入<code>top20</code>，显示前20个内存大小变化最大的函数</p>
 <p>记生成amzn_64B_a_heapprofile.hprof.0010.heap的时刻为t10，生成amzn_64B_a_heapprofile.hprof.0011.heap的时刻为t11，程序在t10比在t11多使用1613.7MB内存</p>
 <p>函数<code>_M_default_append</code>在t10比在t11多使用693.8MB内存，占1613.7MB的43%</p>
 <p>函数<code>Put</code>在t10比在t11多使用299.6MB内存，占1613.7MB的18.6%</p>
@@ -415,7 +415,7 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 <li><p>更多信息请见<a target="_blank" rel="noopener" href="https://gperftools.github.io/gperftools/heapprofile.html">官方文档</a></p>
 </li>
 </ul>
-<h4 id="CPU-Profile"><a href="#CPU-Profile" class="headerlink" title="CPU_Profile"></a>CPU_Profile</h4><ul>
+<h3 id="CPU-Profile"><a href="#CPU-Profile" class="headerlink" title="CPU_Profile"></a>CPU_Profile</h3><ul>
 <li><p>简介</p>
 <p>cpu_profile记录程序执行过程中各函数的cpu消耗时间，并生成函数调用图，<strong>用来定位热点函数</strong>。</p>
 <p>使用它有三个步骤：将库链接到程序、运行代码和分析输出。</p>
@@ -558,7 +558,7 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools"><span class="nav-number">1.</span> <span class="nav-text">安装gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%89%80%E9%9C%80%E5%B7%A5%E5%85%B7"><span class="nav-number">1.0.1.</span> <span class="nav-text">安装所需工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libunwind"><span class="nav-number">1.0.2.</span> <span class="nav-text">安装libunwind</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7gv"><span class="nav-number">1.0.3.</span> <span class="nav-text">安装图形可视化工具gv</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools-1"><span class="nav-number">1.0.4.</span> <span class="nav-text">安装gperftools</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8gperftools"><span class="nav-number">2.</span> <span class="nav-text">使用gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TCMalloc"><span class="nav-number">2.0.1.</span> <span class="nav-text">TCMalloc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Heap-Checker"><span class="nav-number">2.0.2.</span> <span class="nav-text">Heap_Checker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Heap-Profile"><span class="nav-number">2.0.3.</span> <span class="nav-text">Heap_Profile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU-Profile"><span class="nav-number">2.0.4.</span> <span class="nav-text">CPU_Profile</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools"><span class="nav-number">1.</span> <span class="nav-text">安装gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%89%80%E9%9C%80%E5%B7%A5%E5%85%B7"><span class="nav-number">1.1.</span> <span class="nav-text">安装所需工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85libunwind"><span class="nav-number">1.2.</span> <span class="nav-text">安装libunwind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7gv"><span class="nav-number">1.3.</span> <span class="nav-text">安装图形可视化工具gv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gperftools-1"><span class="nav-number">1.4.</span> <span class="nav-text">安装gperftools</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8gperftools"><span class="nav-number">2.</span> <span class="nav-text">使用gperftools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCMalloc"><span class="nav-number">2.1.</span> <span class="nav-text">TCMalloc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap-Checker"><span class="nav-number">2.2.</span> <span class="nav-text">Heap_Checker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap-Profile"><span class="nav-number">2.3.</span> <span class="nav-text">Heap_Profile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU-Profile"><span class="nav-number">2.4.</span> <span class="nav-text">CPU_Profile</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
