@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":true,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="TreeLine为C++项目，使用VSCode远程连接linux并实现debug。 部署工具 VSCode  gdb12.1   步骤 VSCode远程连接linux服务器并打开存放TreeLine的文件夹  修改项目目录下的.vscode&#x2F;launch.json文件为： 1234567891011121314151617181920212223242526272829303132&amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TreeLine的debug">
+<meta property="og:url" content="http://example.com/2023/08/20/TreeLine%E7%9A%84debug/index.html">
+<meta property="og:site_name" content="XIANG的博客">
+<meta property="og:description" content="TreeLine为C++项目，使用VSCode远程连接linux并实现debug。 部署工具 VSCode  gdb12.1   步骤 VSCode远程连接linux服务器并打开存放TreeLine的文件夹  修改项目目录下的.vscode&#x2F;launch.json文件为： 1234567891011121314151617181920212223242526272829303132&amp;#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/%E6%96%AD%E7%82%B9.png">
+<meta property="og:image" content="http://example.com/images/123.png">
+<meta property="og:image" content="http://example.com/images/%E5%90%AF%E5%8A%A8.png">
+<meta property="article:published_time" content="2023-08-20T14:17:28.000Z">
+<meta property="article:modified_time" content="2023-08-21T05:11:42.122Z">
+<meta property="article:author" content="XIANG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E6%96%AD%E7%82%B9.png">
+
+<link rel="canonical" href="http://example.com/2023/08/20/TreeLine%E7%9A%84debug/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TreeLine的debug | XIANG的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="XIANG的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">XIANG的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/20/TreeLine%E7%9A%84debug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="XIANG">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="XIANG的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TreeLine的debug
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-08-20 07:17:28 / 修改时间：22:11:42" itemprop="dateCreated datePublished" datetime="2023-08-20T07:17:28-07:00">2023-08-20</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">TreeLine</a>为C++项目，使用VSCode远程连接linux并实现debug。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li><p>VSCode</p>
+</li>
+<li><p>gdb12.1</p>
+</li>
+</ul>
+<h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><ul>
+<li><p>VSCode远程连接linux服务器并打开存放TreeLine的文件夹</p>
+</li>
+<li><p>修改项目目录下的.vscode/launch.json文件为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">  <span class="string">&quot;configurations&quot;</span>: [</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">          <span class="string">&quot;name&quot;</span>: <span class="string">&quot;(gdb) 启动&quot;</span>, <span class="comment">//debug名称</span></span><br><span class="line">          <span class="string">&quot;type&quot;</span>: <span class="string">&quot;cppdbg&quot;</span>,</span><br><span class="line">          <span class="string">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">          <span class="string">&quot;program&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;/build/bench/run_custom&quot;</span>, <span class="comment">//要debug的可执行文件的存放位置</span></span><br><span class="line">          <span class="string">&quot;args&quot;</span>: [],      <span class="comment">//参数（待定）</span></span><br><span class="line">          <span class="string">&quot;stopAtEntry&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">          <span class="string">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,</span><br><span class="line">          <span class="string">&quot;environment&quot;</span>: [],</span><br><span class="line">          <span class="string">&quot;externalConsole&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">          <span class="string">&quot;MIMode&quot;</span>: <span class="string">&quot;gdb&quot;</span>,</span><br><span class="line">          <span class="string">&quot;miDebuggerPath&quot;</span>:<span class="string">&quot;/usr/local/bin/gdb&quot;</span>,  <span class="comment">//linux中gdb的路径</span></span><br><span class="line">          <span class="string">&quot;setupCommands&quot;</span>: [</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;为 gdb 启用整齐打印&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;text&quot;</span>: <span class="string">&quot;-enable-pretty-printing&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">              &#125;,</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;将反汇编风格设置为 Intel&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;text&quot;</span>: <span class="string">&quot;-gdb-set disassembly-flavor intel&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">              &#125;</span><br><span class="line">          ]</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="编译源文件"><a href="#编译源文件" class="headerlink" title="编译源文件"></a>编译源文件</h2><p>与<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">TreeLine</a>中的编译过程一致，但需修改部分：</p>
+<ul>
+<li><p>在编译之前，将treeline文件夹更名为treeline-debug，并修改treeline/CMakeLists.txt文件，在第三行后加入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET(CMAKE_BUILD_TYPE <span class="string">&quot;Debug&quot;</span>)</span><br><span class="line">SET(CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;<span class="variable">$ENV</span>&#123;CXXFLAGS&#125; -O0 -Wall -g -ggdb&quot;</span>)</span><br><span class="line">SET(CMAKE_CXX_FLAGS_RELEASE <span class="string">&quot;<span class="variable">$ENV</span>&#123;CXXFLAGS&#125; -O3 -Wall&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>以使得编译好的可执行文件中含有gdb需要的信息</p>
+</li>
+<li><p>在编译时，将<code>-DCMAKE_BUILD_TYPE=Release</code>选项去掉</p>
+</li>
+</ul>
+<h2 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h2><ul>
+<li><p>获取运行时参数</p>
+<p>首先修改treeline-debug/scripts/ycsb_v2/COND文件，使得运行cond命令时只运行一个实验（详见<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">TreeLine</a>）</p>
+<p>将treeline-debug/scripts/ycsb_v2/run.sh的内容复制一份，给treeline-debug/scripts/ycsb_v2/run_copy.sh</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> treeline-debug</span><br><span class="line"><span class="built_in">cp</span> scripts/ycsb_v2/run.sh scripts/ycsb_v2/run_copy.sh</span><br></pre></td></tr></table></figure>
+<p>将run_copy.sh中<code>../../build/bench/run_custom \</code>及其之后的所有语句都删掉，并在run_copy.sh的末尾加上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">args+=(<span class="string">&quot;--workload_config=<span class="variable">$COND_OUT</span>/workload.yml&quot;</span>)</span><br><span class="line">args+=(<span class="string">&quot;--output_path=<span class="variable">$COND_OUT</span>&quot;</span>)</span><br><span class="line"><span class="built_in">echo</span> ------------------------------------------------------------------------------------------------------------</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;args[@]&#125;</span></span><br><span class="line"><span class="built_in">echo</span> ------------------------------------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<p>执行cond命令，获取参数，<strong>参数会被打印在两条分割线之间</strong>，打印参数后cond执行完毕，程序结束</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cond run //scripts/ycsb_v2: [<span class="built_in">command</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将获取到的参数以如下形式全部填入launch.json文件中</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">  <span class="string">&quot;configurations&quot;</span>: [</span><br><span class="line"></span><br><span class="line">      &#123;</span><br><span class="line">          <span class="string">&quot;name&quot;</span>: <span class="string">&quot;(gdb) 启动&quot;</span>, <span class="comment">//debug名称</span></span><br><span class="line">          <span class="string">&quot;type&quot;</span>: <span class="string">&quot;cppdbg&quot;</span>,</span><br><span class="line">          <span class="string">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">          <span class="string">&quot;program&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;/build/bench/run_custom&quot;</span>, <span class="comment">//要debug的可执行文件的存放位置</span></span><br><span class="line">          <span class="string">&quot;args&quot;</span>: [<span class="string">&quot;--bg_threads=4&quot;</span>, <span class="string">&quot;--latency_sample_period=10&quot;</span>, <span class="string">&quot;--bypass_wal=true&quot;</span>, <span class="string">&quot;--use_direct_io=true&quot;</span>, <span class="string">&quot;--rdb_bloom_bits=10&quot;</span>, <span class="string">&quot;--rdb_prefix_bloom_size=3&quot;</span>, <span class="string">&quot;--reorg_length=2&quot;</span>, <span class="string">&quot;--deferral_autotuning=true&quot;</span>, <span class="string">&quot;--max_deferrals=1&quot;</span>, <span class="string">&quot;--optimistic_rec_caching=false&quot;</span>, <span class="string">&quot;--pg_use_pgm_builder=true&quot;</span>, <span class="string">&quot;--record_size_bytes=64&quot;</span>, <span class="string">&quot;--tl_page_fill_pct=70&quot;</span>, <span class="string">&quot;--records_per_page_goal=44&quot;</span>, <span class="string">&quot;--records_per_page_epsilon=5&quot;</span>, <span class="string">&quot;--rec_cache_use_lru=false&quot;</span>, <span class="string">&quot;--cache_size_mib=1143&quot;</span>, <span class="string">&quot;--pg_parallelize_final_flush=true&quot;</span>, <span class="string">&quot;--db=pg_llsm&quot;</span>, <span class="string">&quot;--custom_dataset=/mnt/data2/datasets/amazon_reviews.txt&quot;</span>, <span class="string">&quot;--threads=16&quot;</span>, <span class="string">&quot;--verbose&quot;</span>, <span class="string">&quot;--db_path=/mnt/data2/flash2/llsm&quot;</span>, <span class="string">&quot;--seed=42&quot;</span>, <span class="string">&quot;--notify_after_init&quot;</span>, <span class="string">&quot;--skip_load&quot;</span>, <span class="string">&quot;--workload_config=/home/xlx/treeline-debug/cond-out/scripts/ycsb_v2/amzn-pg_llsm-64B-a-zipfian-16.task.1692001938/workload.yml&quot;</span>, <span class="string">&quot;--output_path=/home/xlx/treeline-debug/cond-out/scripts/ycsb_v2/amzn-pg_llsm-64B-a-zipfian-16.task.1692001938&quot;</span>], </span><br><span class="line">          <span class="string">&quot;stopAtEntry&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">          <span class="string">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,</span><br><span class="line">          <span class="string">&quot;environment&quot;</span>: [],</span><br><span class="line">          <span class="string">&quot;externalConsole&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">          <span class="string">&quot;MIMode&quot;</span>: <span class="string">&quot;gdb&quot;</span>,</span><br><span class="line">          <span class="string">&quot;miDebuggerPath&quot;</span>:<span class="string">&quot;/usr/local/bin/gdb&quot;</span>,  <span class="comment">//linux中gdb的路径</span></span><br><span class="line">          <span class="string">&quot;setupCommands&quot;</span>: [</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;为 gdb 启用整齐打印&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;text&quot;</span>: <span class="string">&quot;-enable-pretty-printing&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">              &#125;,</span><br><span class="line">              &#123;</span><br><span class="line">                  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;将反汇编风格设置为 Intel&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;text&quot;</span>: <span class="string">&quot;-gdb-set disassembly-flavor intel&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">              &#125;</span><br><span class="line">          ]</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置断点</p>
+<p>源文件所在路径为treeline-debug/bench/run_custom.cpp，在这个文件上打断点</p>
+<p><img src="/images/断点.png" alt=""></p>
+</li>
+<li><p>启动debug</p>
+<p>首先点击左侧栏的<em>运行和调试</em>，然后选择对应的debug名称（launch.json中为<strong>(gdb)启动</strong>），最后点击小三角或者F5启动调试</p>
+<p><img src="/images/123.png" alt=""></p>
+<p>启动成功，在第一个断点处停下，左侧为变量、调用堆栈、监控和断点</p>
+<p><img src="/images/启动.png" alt=""></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/19/gperftools%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" rel="prev" title="gperftools的安装与使用">
+      <i class="fa fa-chevron-left"></i> gperftools的安装与使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-number">1.1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.</span> <span class="nav-text">步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">编译源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debug"><span class="nav-number">3.</span> <span class="nav-text">debug</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">XIANG</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">XIANG</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '956cf00e5f5cd2b0aefc',
+      clientSecret: 'bf5af52bcd6ed906709bf569fcaaea1def58dc5f',
+      repo        : 'XIANG1120.github.io',
+      owner       : 'XIANG1120',
+      admin       : ['XIANG1120'],
+      id          : '5fe853d54d5e4cf57a2db7887187afe8',
+        language: 'zh-CH',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
