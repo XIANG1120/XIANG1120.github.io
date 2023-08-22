@@ -170,10 +170,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-08-20 07:17:28 / 修改时间：22:11:42" itemprop="dateCreated datePublished" datetime="2023-08-20T07:17:28-07:00">2023-08-20</time>
+              <time title="创建时间：2023-08-20 07:17:28" itemprop="dateCreated datePublished" datetime="2023-08-20T07:17:28-07:00">2023-08-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-21 20:57:13" itemprop="dateModified" datetime="2023-08-21T20:57:13-07:00">2023-08-21</time>
+              </span>
 
           
 
@@ -202,7 +208,7 @@
 </ul>
 <h2 id="编译源文件"><a href="#编译源文件" class="headerlink" title="编译源文件"></a>编译源文件</h2><p>与<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">TreeLine</a>中的编译过程一致，但需修改部分：</p>
 <ul>
-<li><p>在编译之前，将treeline文件夹更名为treeline-debug，并修改treeline/CMakeLists.txt文件，在第三行后加入：</p>
+<li><p>在编译之前，将treeline文件夹更名为treeline-debug，并修改treeline-debug/CMakeLists.txt文件，在第三行后加入：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SET(CMAKE_BUILD_TYPE <span class="string">&quot;Debug&quot;</span>)</span><br><span class="line">SET(CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;<span class="variable">$ENV</span>&#123;CXXFLAGS&#125; -O0 -Wall -g -ggdb&quot;</span>)</span><br><span class="line">SET(CMAKE_CXX_FLAGS_RELEASE <span class="string">&quot;<span class="variable">$ENV</span>&#123;CXXFLAGS&#125; -O3 -Wall&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p>以使得编译好的可执行文件中含有gdb需要的信息</p>
 </li>
@@ -211,11 +217,12 @@
 </ul>
 <h2 id="debug"><a href="#debug" class="headerlink" title="debug"></a>debug</h2><ul>
 <li><p>获取运行时参数</p>
-<p>首先修改treeline-debug/scripts/ycsb_v2/COND文件，使得运行cond命令时只运行一个实验（详见<a target="_blank" rel="noopener" href="https://xiang1120.github.io/2023/08/19/TreeLine的编译及运行/">TreeLine</a>）</p>
+<p>首先修改treeline-debug/scripts/ycsb_v2/COND文件，使得运行cond命令时只运行某一个特定的实验</p>
 <p>将treeline-debug/scripts/ycsb_v2/run.sh的内容复制一份，给treeline-debug/scripts/ycsb_v2/run_copy.sh</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> treeline-debug</span><br><span class="line"><span class="built_in">cp</span> scripts/ycsb_v2/run.sh scripts/ycsb_v2/run_copy.sh</span><br></pre></td></tr></table></figure>
 <p>将run_copy.sh中<code>../../build/bench/run_custom \</code>及其之后的所有语句都删掉，并在run_copy.sh的末尾加上</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">args+=(<span class="string">&quot;--workload_config=<span class="variable">$COND_OUT</span>/workload.yml&quot;</span>)</span><br><span class="line">args+=(<span class="string">&quot;--output_path=<span class="variable">$COND_OUT</span>&quot;</span>)</span><br><span class="line"><span class="built_in">echo</span> ------------------------------------------------------------------------------------------------------------</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;args[@]&#125;</span></span><br><span class="line"><span class="built_in">echo</span> ------------------------------------------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<p>修改COND文件：将相应的cond运行命令描述中的<code>run=&quot;./run.sh&quot;,</code>改为<code>run=&quot;./run_copy.sh&quot;,</code></p>
 <p>执行cond命令，获取参数，<strong>参数会被打印在两条分割线之间</strong>，打印参数后cond执行完毕，程序结束</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cond run //scripts/ycsb_v2: [<span class="built_in">command</span>]</span><br></pre></td></tr></table></figure>
 </li>
@@ -283,7 +290,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-20 07:13:07" itemprop="dateModified" datetime="2023-08-20T07:13:07-07:00">2023-08-20</time>
+                <time title="修改时间：2023-08-21 20:56:54" itemprop="dateModified" datetime="2023-08-21T20:56:54-07:00">2023-08-21</time>
               </span>
 
           
@@ -543,7 +550,7 @@ of cumulative (percentage)  //此函数本身和其直接及间接调用的所�
 <p>并在COND文件中修改实验配置：工作负载为A、记录大小为64B，线程数为16</p>
 <p>在treeline目录下，运行</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cond run //scripts/ycsb_v2:amzn</span><br></pre></td></tr></table></figure>
-<p>程序运行结束后，会生成amzn_64B_a_16_cpu.prof文件，记录了在运行过程中个函数的cpu消耗时间和调用关系，将其移动到treeline/scripts/ycsb_v2/cpuprofile文件夹下</p>
+<p>程序运行结束后，会生成amzn_64B_a_16_cpu.prof文件，记录了在运行过程中各函数的cpu消耗时间和调用关系，将其移动到treeline/scripts/ycsb_v2/cpuprofile文件夹下</p>
 <p>以pdf的形式生成结果分析报告</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pprof build/bench/run_custom scripts/ycsb_v2/cpuprofile/amzn_64B_a_16_cpu.prof --pdf &gt;amzn_64B_a_16_cpu.pdf</span><br></pre></td></tr></table></figure>
 <p>生成amzn_64B_a_16_cpu.pdf文件在treeline/下，可以看到cpu消耗时间较长的函数为<code>GetCacheIndex</code>,<code>__pread_nocancel</code>,<code>__pwrite_nocancel</code>等，说明这几个函数为热点函数，优化程序时可以重点关注这几个函数</p>
